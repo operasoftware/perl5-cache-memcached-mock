@@ -3,30 +3,53 @@ package Cache::Memcached::Mock;
 
 use strict;
 use warnings;
+use integer;
+use bytes;
 
-use constant VALUE     => 0;
-use constant TIMESTAMP => 1;
+sub VALUE     () { 0 }
+sub TIMESTAMP () { 1 }
 
 # All instances share the memory space
 our %MEMCACHE_STORAGE = ();
 
+sub add {
+    my ($self, $key, $value, $expiry_time) = @_;
+    if (exists $MEMCACHE_STORAGE{$key}) {
+        return;
+    }
+    return $self->set($key, $value, $expiry_time);
+}
+
 sub new {
 
-    my ($class) = @_;
+    my ($class, $options) = @_;
+
     $class = ref $class || $class;
-    my $self = [];
+
+    $options ||= {};
+
+    # Default memcached size limit
+    $options->{size_limit} = 1024 * 1024;
+
+    my $self = { %{ $options } };
+
     bless $self, $class;
     $self->flush_all();
+
     return $self;
 }
 
 sub delete {
-    my ($self, $memc_key) = @_;
-    if (! exists $MEMCACHE_STORAGE{$memc_key}) {
+    my ($self, $key) = @_;
+    if (! exists $MEMCACHE_STORAGE{$key}) {
         return;
     }
-    delete $MEMCACHE_STORAGE{$memc_key};
+    delete $MEMCACHE_STORAGE{$key};
     return 1;
+}
+
+sub disconnect_all {
+    return # noop
 }
 
 sub flush_all {
@@ -59,15 +82,68 @@ sub get_multi {
     return @values;
 }
 
+sub replace {
+    my ($self, $key, $value, $expiry_time) = @_;
+    if (! exists $MEMCACHE_STORAGE{$key}) {
+        return;
+    }
+    return $self->set($key, $value, $expiry_time);
+}
+
 sub set {
     my ($self, $key, $value, $expiry_time) = @_;
+
+    my $size_limit = $self->_size_limit();
+
+    # Can't store values longer than (default) 1Mb limit
+    if (bytes::length($value) > $size_limit) {
+        return;
+    }
+
     if ($expiry_time) {
         $expiry_time += time();
     } else {
         $expiry_time = undef;
     }
+
     $MEMCACHE_STORAGE{$key} = [ $value, $expiry_time ];
+
     return 1;
+}
+
+sub set_servers {
+    my ($self, $servers) = @_;
+    return ($self->{servers} = $servers);
+}
+
+sub set_compress_threshold {
+    my ($self, $comp_thr) = @_;
+    return ($self->{compress_threshold} = $comp_thr - 0);
+}
+
+# XXX NIY
+#sub set_readonly {
+#    my ($self, $readonly) = @_;
+#    return ($self->{readonly} = $readonly);
+#}
+
+sub incr {
+    my ($self, $key, $offset) = @_;
+    $offset //= 1;
+    return ($MEMCACHE_STORAGE{$key}->[VALUE] += $offset);
+}
+
+sub decr {
+    my ($self, $key, $offset) = @_;
+    $offset //= 1;
+    my $new_val = $MEMCACHE_STORAGE{$key}->[VALUE] - $offset;
+    $new_val = 0 if $new_val < 0;
+    return ($MEMCACHE_STORAGE{$key}->[VALUE] = $new_val);
+}
+
+sub _size_limit {
+    my ($self) = @_;
+    return $self->{size_limit};
 }
 
 1;

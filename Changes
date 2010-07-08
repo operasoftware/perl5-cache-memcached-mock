@@ -1,0 +1,16 @@
+NAME
+    Changes - List of significant changes to Cache::Memcached::Mock
+
+
+  Changes in Cache::Memcached::Mock 0.02           07th July 2010
+
+      Added new methods: add(), replace(), incr(), decr(),
+        set_servers(), set_compress_threshold() and related
+        test cases.
+
+      Added mimicking of default size limit for values, through
+        a new tunable 'size_limit' constructor option.
+
+  Changes in Cache::Memcached::Mock 0.01           June 2010
+      Initial version released
+
