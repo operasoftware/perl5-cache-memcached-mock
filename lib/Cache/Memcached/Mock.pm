@@ -7,6 +7,8 @@ use integer;
 use bytes;
 use Storable ();
 
+our $VERSION = '0.04';
+
 sub VALUE ()     {0}
 sub TIMESTAMP () {1}
 sub REFERENCE () {2}
@@ -172,7 +174,7 @@ Cache::Memcached::Mock - A mock class for Cache::Memcached
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 SYNOPSIS
 
@@ -185,6 +187,13 @@ Supports only a subset of L<Cache::Memcached> functionality.
     my $value = $cache->get('somekey');
     my $set_ok = $cache->set('someotherkey', 'somevalue');
     $set_ok = $cache->set('someotherkey', 'somevalue', 60);  # seconds
+
+    my $ok = $cache->add('another_key', 'another_value');
+    $ok = $cache->replace('another_key', 'another_value');
+
+    $cache->incr('some-counter');
+    $cache->decr('some-counter');
+    $cache->incr('some-counter', 2);
 
     # new() also flushes all values
     $cache->flush_all();
