@@ -1,6 +1,10 @@
 NAME
     Changes - List of significant changes to Cache::Memcached::Mock
 
+  Changes in Cache::Memcached::Mock 0.05           10th July 2010
+
+      Fixed code to run under perl 5.8.x. Was using '//='.
+      Documented the 'size_limit' artificial option.
 
   Changes in Cache::Memcached::Mock 0.04           08th July 2010
 

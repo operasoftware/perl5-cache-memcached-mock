@@ -7,7 +7,7 @@ use integer;
 use bytes;
 use Storable ();
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 sub VALUE ()     {0}
 sub TIMESTAMP () {1}
@@ -33,7 +33,7 @@ sub new {
     $options ||= {};
 
     # Default memcached size limit
-    $options->{size_limit} = 1024 * 1024;
+    $options->{size_limit} ||= 1024 * 1024;
 
     my $self = { %{$options} };
 
@@ -145,13 +145,13 @@ sub set_compress_threshold {
 
 sub incr {
     my ($self, $key, $offset) = @_;
-    $offset //= 1;
+    $offset ||= 1;
     return ($MEMCACHE_STORAGE{$key}->[VALUE] += $offset);
 }
 
 sub decr {
     my ($self, $key, $offset) = @_;
-    $offset //= 1;
+    $offset ||= 1;
     my $new_val = $MEMCACHE_STORAGE{$key}->[VALUE] - $offset;
     $new_val = 0 if $new_val < 0;
     return ($MEMCACHE_STORAGE{$key}->[VALUE] = $new_val);
@@ -166,6 +166,7 @@ sub _size_limit {
 
 __END__
 
+
 =pod
 
 =head1 NAME
@@ -174,14 +175,17 @@ Cache::Memcached::Mock - A mock class for Cache::Memcached
 
 =head1 VERSION
 
-version 0.04
+version 0.05
 
 =head1 SYNOPSIS
 
 Supports only a subset of L<Cache::Memcached> functionality.
 
-    # Any arguments are just ignored
     my $cache = Cache::Memcached::Mock->new();
+
+    # You can also set the limit for the size of the values
+    # Default real memcached limit is 1Mb
+    $cache = Cache::Memcached::Mock->new({ size_limit => 65536 }); # bytes
 
     # Values are stored in a process global hash
     my $value = $cache->get('somekey');
@@ -214,7 +218,7 @@ unit tests running, or using a centralized memcached daemon, I can just pass
 a L<Cache::Memcached::Mock> instance wherever a L<Cache::Memcached> one is required.
 
 This is an example of how you would use this mock class:
-    
+
     # Use the "Mock" one instead of C::MC
     my $memc = Cache::Memcached::Mock->new();
 
@@ -237,6 +241,4 @@ This software is copyright (c) 2010 by Opera Software ASA.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
-
-=cut
 
