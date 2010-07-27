@@ -1,4 +1,4 @@
-use Test::More tests => 13;
+use Test::More tests => 18;
 use Cache::Memcached::Mock;
 
 my $c = Cache::Memcached::Mock->new();
@@ -6,6 +6,13 @@ my $k = 'counter1';
 
 is($c->get($k), undef, 'Key doesn\'t initially exist');
 
+is($c->incr($k), undef, 'Can\'t increment unknown key');
+is($c->get($k), undef, 'Key isn\'t set');
+
+is($c->decr($k), undef, 'Can\'t decrement unknown key');
+is($c->get($k), undef, 'Key isn\'t set');
+
+ok($c->set($k, 0), 'Set key');
 ok($c->incr($k));
 is($c->get($k) => 1, 'First incr() returns 1');
 

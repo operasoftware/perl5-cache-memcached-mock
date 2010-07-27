@@ -145,12 +145,16 @@ sub set_compress_threshold {
 
 sub incr {
     my ($self, $key, $offset) = @_;
+    return unless exists $MEMCACHE_STORAGE{$key};
+    
     $offset = 1 unless defined $offset;
     return ($MEMCACHE_STORAGE{$key}->[VALUE] += $offset);
 }
 
 sub decr {
     my ($self, $key, $offset) = @_;
+    return unless exists $MEMCACHE_STORAGE{$key};
+    
     $offset = 1 unless defined $offset;
     my $new_val = $MEMCACHE_STORAGE{$key}->[VALUE] - $offset;
     $new_val = 0 if $new_val < 0;
