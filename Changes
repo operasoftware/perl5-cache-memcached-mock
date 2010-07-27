@@ -1,6 +1,15 @@
 NAME
     Changes - List of significant changes to Cache::Memcached::Mock
 
+  Changes in Cache::Memcached::Mock 0.06           27th July 2010
+
+      Implemented emulation of the fixed-width integer arithmetic
+        (truncate and overflow) when incrementing/decrementing.
+
+      Fixed the increment/decrement functions to not define the
+        key implicitly and to work correctly when using 0 (zero)
+        as the delta value.
+
   Changes in Cache::Memcached::Mock 0.05           10th July 2010
 
       Fixed code to run under perl 5.8.x. Was using '//='.

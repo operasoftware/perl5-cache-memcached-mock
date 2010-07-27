@@ -6,7 +6,7 @@ use warnings;
 use bytes;
 use Storable ();
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 sub VALUE ()     {0}
 sub TIMESTAMP () {1}
@@ -207,7 +207,7 @@ Cache::Memcached::Mock - A mock class for Cache::Memcached
 
 =head1 VERSION
 
-version 0.05
+version 0.06
 
 =head1 SYNOPSIS
 
