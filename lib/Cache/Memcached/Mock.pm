@@ -269,6 +269,7 @@ whenever you don't necessarily need one, for example unit testing.
 =head1 AUTHOR
 
   Cosimo Streppone <cosimo@opera.com>
+  Márcio Faustino <marciof@opera.com>
 
 =head1 COPYRIGHT AND LICENSE
 
