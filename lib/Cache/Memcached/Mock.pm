@@ -6,7 +6,7 @@ use warnings;
 use bytes;
 use Storable ();
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 sub VALUE ()     {0}
 sub TIMESTAMP () {1}
@@ -113,7 +113,7 @@ sub set {
     }
 
     # Can't store values longer than (default) 1Mb limit
-    if (bytes::length($value) > $size_limit) {
+    if (defined $value and bytes::length($value) > $size_limit) {
         return;
     }
 
