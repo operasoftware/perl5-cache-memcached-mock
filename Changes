@@ -1,6 +1,11 @@
 NAME
     Changes - List of significant changes to Cache::Memcached::Mock
 
+  Changes in Cache::Memcached::Mock 0.07         12th August 2013
+
+      Fixed warning when trying to store an undefined value.
+        Thanks to Kurt Starsinic for reporting and the patch.
+
   Changes in Cache::Memcached::Mock 0.06           27th July 2010
 
       Implemented emulation of the fixed-width integer arithmetic
