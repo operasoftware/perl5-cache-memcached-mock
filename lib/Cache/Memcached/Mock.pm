@@ -24,8 +24,8 @@ sub add {
 }
 
 sub new {
-
-    my ($class, $options) = @_;
+    my $class = shift;
+    my $options = (@_ == 1) ? shift : { @_ };  # hashref-ify args
 
     $class = ref $class || $class;
 
